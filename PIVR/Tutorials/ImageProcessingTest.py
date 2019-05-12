@@ -39,7 +39,7 @@ while True:
     img = cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)
 
     cv2.namedWindow('dst', cv2.WINDOW_AUTOSIZE)
-    cv2.imshow('dst', img)
+    cv2.imshow('dst', edges)
 
     # blur = cv2.blur(srcGray, (b, b), 0)
     # dst = cv2.Sobel(srcGray, cv2.CV_16S, 1, 1, ksize=a)
