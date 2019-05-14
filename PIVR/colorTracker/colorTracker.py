@@ -6,50 +6,96 @@ import numpy as np
 # track red
 
 cap = cv2.VideoCapture(0)
+tail_buf_iter = 0
+tail_buff = []
+tail_buf_size = 50
+
+
+def draw_trail(img):
+    coords = []
+
+    for pos in np.roll(tail_buff, tail_buf_size - tail_buf_iter, 0):
+        if pos is not None:
+            coords.append(pos)
+
+    for i in range(len(coords) - 1):
+        cv2.line(img, (coords[i][0], coords[i][1]), (coords[i+1][0], coords[i+1][1]), (0, 0, 255), 2)
 
 
 def get_mask(img, lower, upper):
-    lower = np.array([lower])
-    upper = np.array([upper])
-    return cv2.inRange(filtered_img, lower, upper)
+    mask = cv2.inRange(img, lower, upper)
+    mask = cv2.erode(mask, None, iterations=2)
+    mask = cv2.dilate(mask, None, iterations=2)
+
+    return mask
 
 
 def filter_frame(frame):
-    blur = cv2.bilateralFilter(frame, 12, 75, 75)
-    img_yuv = cv2.cvtColor(blur, cv2.COLOR_BGR2YUV)
-    # img_yuv[:, :, 0] = cv2.equalizeHist(img_yuv[:, :, 0])
-    # img_output = cv2.cvtColor(img_yuv, cv2.COLOR_YUV2BGR)
+    blur = cv2.GaussianBlur(frame, (11, 11), 0)
 
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(5, 5))
-    img_yuv[:, :, 0] = clahe.apply(img_yuv[:, :, 0])
-    img_output = cv2.cvtColor(img_yuv, cv2.COLOR_YUV2BGR)
-    img_output = cv2.cvtColor(img_output, cv2.COLOR_BGR2HSV)
+    img_output = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
 
     return img_output
 
+
+for i in range(tail_buf_size):
+    tail_buff.append(None)
 
 while True:
     ret, frame = cap.read()
     filtered_img = filter_frame(frame)
 
-    low_red = (100, 100, 0)
-    up_red = (200, 255, 255)
+    lower = (29, 86, 6)
+    upper = (64, 255, 255)
 
     # masking colors
-    red_mask = get_mask(filtered_img, (25, 150, 50), (255, 255, 255))
-    res = cv2.bitwise_and(filtered_img, filtered_img, mask=red_mask)
+    green_mask = get_mask(filtered_img, lower, upper)
+    res = cv2.bitwise_and(filtered_img, filtered_img, mask=green_mask)
 
     # find contours
-    contours, hierarchy = cv2.findContours(red_mask, 1, 2)
-    min_area = 100
+    _, contours, hierarchy = cv2.findContours(green_mask, 1, 2)
+    min_area = 200
 
-    for cnt in contours:
-        if cv2.contourArea(cnt) < min_area:
-            continue
-        rect = cv2.minAreaRect(cnt)
-        box = cv2.boxPoints(rect)
-        box = np.int0(box)
-        frame = cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
+    if len(contours) > 0:
+        largest_cnt = contours[0]
+        largest_area = cv2.contourArea(contours[0])
+        index = 0
+        ind = 0
+
+        for cnt in contours:
+            area = cv2.contourArea(cnt)
+            if area < min_area:
+                continue
+            elif area > largest_area:
+                largest_cnt = cnt
+                largest_area = area
+                index = ind
+            ind += 1
+
+        if largest_area >= min_area:
+            rect = cv2.minAreaRect(largest_cnt)
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
+            frame = cv2.drawContours(frame, [box], 0, (0, 255, 0), 2)
+
+            # Calculate center
+            M = cv2.moments(largest_cnt)
+
+            # draw contours
+            cv2.drawContours(frame, contours, -1, (0, 0, 255), 1)
+
+            if M["m00"] != 0:
+                cX = int(M["m10"] / M["m00"])
+                cY = int(M["m01"] / M["m00"])
+                tail_buff[tail_buf_iter] = (cX, cY)
+            else:
+                tail_buff[tail_buf_iter] = None
+    else:
+        tail_buff[tail_buf_iter] = None
+
+    tail_buf_iter += 1
+    tail_buf_iter %= tail_buf_size
+    draw_trail(frame)
 
     # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     res = np.hstack((frame, res))  # stacking images side-by-side
