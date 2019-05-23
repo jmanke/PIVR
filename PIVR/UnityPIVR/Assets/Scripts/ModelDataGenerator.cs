@@ -6,29 +6,24 @@ public class ModelDataGenerator : MonoBehaviour
 {
     public Camera refCam;
     public Transform target;
+    public Transform cube;
     public string outputPath;
     public float minDist = 0.1f;
     public float maxDist = 2f;
     public float increment = 0.01f;
 
-    private Plane[] planes;
-    private Collider objCollider;
-
     private void Start()
     {
-        planes = GeometryUtility.CalculateFrustumPlanes(refCam);
-        objCollider = target.GetComponent<Collider>();
+
     }
 
     private void Update()
     {
-        if (GeometryUtility.TestPlanesAABB(planes, objCollider.bounds))
-        {
-            Debug.Log(target.name + " has been detected!");
-        }
-        else
-        {
-            Debug.Log("Nothing has been detected");
-        }
+        float distance = Vector3.Distance(refCam.transform.position, target.position);
+        var frustumHeight = 2.0f * distance * Mathf.Tan(refCam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+        var frustumWidth = frustumHeight * refCam.aspect;
+        Debug.Log(frustumHeight);
+        cube.position = target.position;
+        cube.localScale = new Vector3(frustumWidth, frustumHeight, cube.localScale.z);
     }
 }

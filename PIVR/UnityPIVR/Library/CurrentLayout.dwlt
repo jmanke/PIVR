@@ -40,8 +40,8 @@ MonoBehaviour:
     y: 0
     width: 915
     height: 826
-  m_MinSize: {x: 104, y: 121}
-  m_MaxSize: {x: 4004, y: 4021}
+  m_MinSize: {x: 100, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -132,10 +132,10 @@ MonoBehaviour:
     y: 30
     width: 2560
     height: 947
-  m_MinSize: {x: 1021, y: 392}
-  m_MaxSize: {x: 26016, y: 14042}
+  m_MinSize: {x: 1017, y: 392}
+  m_MaxSize: {x: 26012, y: 14042}
   vertical: 0
-  controlID: 10
+  controlID: 60
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -156,10 +156,10 @@ MonoBehaviour:
     y: 0
     width: 2079
     height: 947
-  m_MinSize: {x: 540, y: 392}
-  m_MaxSize: {x: 18010, y: 14042}
+  m_MinSize: {x: 536, y: 392}
+  m_MaxSize: {x: 18006, y: 14042}
   vertical: 1
-  controlID: 11
+  controlID: 61
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -181,10 +181,10 @@ MonoBehaviour:
     y: 0
     width: 2079
     height: 826
-  m_MinSize: {x: 540, y: 271}
-  m_MaxSize: {x: 18010, y: 10021}
+  m_MinSize: {x: 536, y: 271}
+  m_MaxSize: {x: 18006, y: 10021}
   vertical: 0
-  controlID: 12
+  controlID: 62
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -413,7 +413,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 19
+    y: 92
     width: 230
     height: 805
   m_PersistentViewDataDictionary: {fileID: 0}
@@ -428,19 +428,20 @@ MonoBehaviour:
     m_ScenePaths: []
     m_ShowAllHits: 0
     m_SearchArea: 1
-    m_Folders: []
+    m_Folders:
+    - Assets
   m_ViewMode: 0
   m_StartGridSize: 16
   m_LastFolders: []
   m_LastFoldersGridSize: 16
-  m_LastProjectPath: E:\Unity\Space Game
+  m_LastProjectPath: C:\Users\jeffm\Documents\github\PIVR\PIVR\UnityPIVR
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 95}
     m_SelectedIDs: c8120000
     m_LastClickedID: 4808
-    m_ExpandedIDs: 0000000000330000fa330000423400009a340000aa3400005c350000363600003e360000443600000837000012370000
+    m_ExpandedIDs: 
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -468,7 +469,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: ffffffff00000000003300009a3400005c3500003e36000012370000
+    m_ExpandedIDs: ffffffff140b0000140d0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -554,9 +555,9 @@ MonoBehaviour:
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -0.94556236, y: 1.5524292, z: 0.09858894}
+    m_Target: {x: -0.01916492, y: 0.0107136965, z: 0.29647133}
     speed: 2
-    m_Value: {x: -0.94556236, y: 1.5524292, z: 0.09858894}
+    m_Value: {x: -0.01916492, y: 0.0107136965, z: 0.29647133}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -584,13 +585,13 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: -0.08556813, y: 0.9041657, z: -0.21553043, w: -0.35877654}
+    m_Target: {x: -0.18748358, y: 0.44021797, z: -0.09449347, w: -0.873}
     speed: 2
-    m_Value: {x: -0.08556764, y: 0.9041605, z: -0.21552919, w: -0.35877448}
+    m_Value: {x: -0.18748358, y: 0.44021797, z: -0.09449347, w: -0.873}
   m_Size:
-    m_Target: 10.207184
+    m_Target: 2.0159044
     speed: 2
-    m_Value: 10.207184
+    m_Value: 2.0159044
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -721,23 +722,23 @@ MonoBehaviour:
   m_PersistentViewDataDictionary: {fileID: 0}
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 
+    m_SelectedIDs: 140b0000
     m_LastClickedID: 0
-    m_ExpandedIDs: 9af5ffff00000000
+    m_ExpandedIDs: 1af9ffffdefbffff00000000902e0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: Cube
+      m_OriginalName: Cube
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: -18638
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 0
       m_ClientGUIView: {fileID: 12}
     m_SearchString: 
