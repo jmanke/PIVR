@@ -32,7 +32,6 @@ def get_mask(img, lower, upper):
 
 def filter_frame(frame):
     blur = cv2.GaussianBlur(frame, (11, 11), 0)
-
     img_output = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
 
     return img_output
@@ -40,6 +39,8 @@ def filter_frame(frame):
 
 for i in range(tail_buf_size):
     tail_buff.append(None)
+
+print(cv2.__version__)
 
 while True:
     ret, frame = cap.read()
@@ -53,7 +54,7 @@ while True:
     res = cv2.bitwise_and(filtered_img, filtered_img, mask=green_mask)
 
     # find contours
-    _, contours, hierarchy = cv2.findContours(green_mask, 1, 2)
+    contours, hierarchy = cv2.findContours(green_mask, 1, 2)
     min_area = 200
 
     if len(contours) > 0:
