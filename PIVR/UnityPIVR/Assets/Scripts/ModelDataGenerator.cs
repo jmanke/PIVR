@@ -12,7 +12,7 @@ public class ModelDataGenerator : MonoBehaviour
     public float minDist = 0.2f;
     public float maxDist = 0.4f;
     public int numIncr = 10;
-    [Range(0f, 100f)] public float increment = 1f;
+    public int numIncrZ = 5;
     public ModelType modelType = ModelType._2D;
 
     public enum ModelType
@@ -23,7 +23,8 @@ public class ModelDataGenerator : MonoBehaviour
 
     private void Start()
     {
-        //StartCoroutine(TakePositionSnapshots());
+        Debug.Log("Distance = " + Vector3.Distance(refCam.transform.position, target.position));    
+        //CaptureScreenshot("manual_image");
         if (modelType == ModelType._2D)
             StartCoroutine(TakePositionSnapshots());
     }
@@ -39,8 +40,8 @@ public class ModelDataGenerator : MonoBehaviour
         refCam.targetTexture = null;
         RenderTexture.active = null; // JC: added to avoid errors
         Destroy(rt);
-        byte[] bytes = screenShot.EncodeToPNG();
-        string filename = Application.dataPath.Replace("Assets", "") + outputPath + "/" + imgName + ".png";
+        byte[] bytes = screenShot.EncodeToJPG();
+        string filename = Application.dataPath.Replace("Assets", "") + outputPath + "/" + imgName + ".jpg";
         System.IO.File.WriteAllBytes(filename, bytes);
         Debug.Log("Saved " + filename);
     }
@@ -70,35 +71,71 @@ public class ModelDataGenerator : MonoBehaviour
 
     private IEnumerator TakePositionSnapshots()
     {
-        int numIterations = 10;
-        float increment = (maxDist - minDist) / numIterations;
+        float increment = (maxDist - minDist) / numIncr;
         var originalTargetPos = target.position;
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.5f);
         int c = 0;
 
-        for (int i = 0; i < numIterations; i++)
+        for (int i = 0; i < numIncrZ; i++)
         {
             float distance = minDist + (i * increment);
-            float frustumHeight = 2.0f * distance * Mathf.Tan(refCam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-            float frustumWidth = frustumHeight * refCam.aspect;
-            var topLeft = new Vector2(-frustumWidth / 2f, frustumHeight / 2f);
+            Vector3[] frustumCorners = new Vector3[4];
+            refCam.CalculateFrustumCorners(new Rect(0, 0, 1, 1), distance, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
+            var topLeft = refCam.transform.TransformVector(frustumCorners[1]);
+            var bottomLeft = refCam.transform.TransformVector(frustumCorners[0]); 
+            var topRight = refCam.transform.TransformVector(frustumCorners[2]);
 
             // TODO: make numIncr based on size of the current size of the object
-            float horIncrAmt = frustumWidth / numIncr;
-            float vertIncrAmt = frustumHeight / numIncr;
+            float horIncrAmt = Vector3.Distance(topLeft, topRight) / numIncr;
+            float vertIncrAmt = Vector3.Distance(topLeft, bottomLeft) / numIncr;
 
             for (int j = 0; j < numIncr; j++)
             {
                 for (int k = 0; k < numIncr; k++, c++)
                 {
                     target.position = new Vector3(topLeft.x + horIncrAmt * k, topLeft.y - vertIncrAmt * j, distance);
-                    CaptureScreenshot("img_" + c);
-                    yield return null;
+                    float dist = Vector3.Distance(target.position, refCam.transform.position);
+                    if (Mathf.Abs(dist - 0.85f) < 0.002f)
+                    {
+                        CaptureScreenshot("img_" + c + "_" + string.Format("{0:00.000}", dist));
+                        yield return null;
+                    }
                 }
             }
         }
 
         target.position = originalTargetPos;
+    }
+
+    void Update()
+    {
+        // this example shows the different camera frustums when using asymmetric projection matrices (like those used by OpenVR).
+
+        var camera = refCam;
+        Vector3[] frustumCorners = new Vector3[4];
+        camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
+
+        for (int i = 2; i < 3; i++)
+        {
+            var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
+            Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.blue);
+        }
+
+        camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Left, frustumCorners);
+
+        for (int i = 0; i < 4; i++)
+        {
+            var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
+            Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.green);
+        }
+
+        camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Right, frustumCorners);
+
+        for (int i = 0; i < 4; i++)
+        {
+            var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
+            Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.red);
+        }
     }
 }

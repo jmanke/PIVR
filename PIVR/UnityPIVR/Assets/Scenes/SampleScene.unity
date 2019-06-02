@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4465782, g: 0.49641252, b: 0.5748167, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -179,6 +179,46 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &214392419
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 214392420}
+  - component: {fileID: 214392421}
+  m_Layer: 0
+  m_Name: Server
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &214392420
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 214392419}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.14644706, y: -0.024463393, z: 0.83647126}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &214392421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 214392419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 131d93aae4cdd764a8ab8b51734e98bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &526525739
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,7 +289,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 526525739}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.3}
+  m_LocalPosition: {x: 0.13, y: -0.04, z: 0.84}
   m_LocalScale: {x: 0.035286937, y: 0.035286937, z: 0.035286907}
   m_Children: []
   m_Father: {fileID: 0}
@@ -301,10 +341,10 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
-  m_projectionMatrixMode: 1
-  m_SensorSize: {x: 36, y: 24}
+  m_projectionMatrixMode: 2
+  m_SensorSize: {x: 2.9, y: 2.9}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 35
+  m_FocalLength: 3.5
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -312,8 +352,8 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 1000
-  field of view: 37.84929
+  far clip plane: 5
+  field of view: 45.007057
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -367,18 +407,19 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1463407688}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5778eaa0c0a87148aa15027e50214dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   refCam: {fileID: 534669904}
   target: {fileID: 526525741}
+  cameraResolution: {x: 640, y: 480}
   outputPath: ImageDump
-  minDist: 0.2
-  maxDist: 0.4
-  numIncr: 5
-  increment: 0.01
+  minDist: 0.835
+  maxDist: 0.845
+  numIncr: 100
+  numIncrZ: 5
   modelType: 1
 --- !u!4 &1463407690
 Transform:
