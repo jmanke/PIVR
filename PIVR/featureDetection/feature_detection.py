@@ -8,6 +8,7 @@ MIN_MATCH_COUNT = 5
 KNOWN_DISTANCE = 85.0
 IMAGE_DUMP = "../UnityPIVR/ImageDump/*.jpg"
 
+
 def get_kp_mask(matches, kp1, kp2):
     good = []
 
@@ -22,6 +23,7 @@ def get_kp_mask(matches, kp1, kp2):
         M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
         matchesMask = mask.ravel().tolist()
         return matchesMask
+
 
 def main():
     best_match_img = None
@@ -42,7 +44,6 @@ def main():
     search_params = dict(checks=50)
 
     flann = cv2.FlannBasedMatcher(index_params, search_params)
-
     c = 0
 
     for img_path in glob(IMAGE_DUMP):

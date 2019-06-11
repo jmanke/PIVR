@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import socket
+import select
 import os
 import io
 import os.path
@@ -22,14 +23,17 @@ def handle_unity_data(data):
     # unity client only sends images
     if data:
         f = open("./image_server.jpg", "w+b")
-        img = data
-        data = unity_client.recv(1024)
+        # img = data
+        # data = unity_client.recv(100000)
 
-        while data:
-            img += data
-            data = unity_client.recv(1024)
+        # while data:
+        #     img += data
+        #     python_client.send(data)
+        #     data = unity_client.recv(100000)
 
-        f.write(img)
+        print("Size of img: ", len(data))
+        f.write(data)
+        python_client.send(data)
 
 
 def main():
@@ -54,16 +58,25 @@ def main():
 
     print("Press 'ctrl' + 'c' to stop server...")
 
+    c = 0
     while True:
+        print(c)
+        c+=1
         try:
-            handle_python_data(python_client.recv(1024))
-            handle_unity_data(unity_client.recv(1024))
+            r_p, _, _ = select.select([python_client], [], [])
+            r_c, _, _ = select.select([unity_client], [], [])
+            if r_p:
+                handle_python_data(python_client.recv(100000))
+            if r_c:
+                handle_unity_data(unity_client.recv(100000))
         except KeyboardInterrupt:
             unity_client.close()
             python_client.close()
             s.close()
             print("Done.")
             exit(0)
+        else:
+            print("hanging")
 
 if __name__ == "__main__":
     main()

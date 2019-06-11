@@ -15,6 +15,8 @@ public class ModelDataGenerator : MonoBehaviour
     public int numIncrZ = 5;
     public ModelType modelType = ModelType._2D;
 
+    public Client client;
+
     public enum ModelType
     {
         _3D,
@@ -23,10 +25,31 @@ public class ModelDataGenerator : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Distance = " + Vector3.Distance(refCam.transform.position, target.position));    
-        //CaptureScreenshot("manual_image");
-        if (modelType == ModelType._2D)
-            StartCoroutine(TakePositionSnapshots());
+        Debug.Log("Distance = " + Vector3.Distance(refCam.transform.position, target.position));
+        StartCoroutine(StartClient());
+        //if (modelType == ModelType._2D)
+        //    StartCoroutine(TakePositionSnapshots());
+    }
+
+    private IEnumerator StartClient()
+    {
+        client = new Client();
+        yield return new WaitForSeconds(1f);
+        CaptureScreenshot();
+    }
+
+    private void CaptureScreenshot()
+    {
+        var rt = new RenderTexture(cameraResolution.x, cameraResolution.y, 24);
+        refCam.targetTexture = rt;
+        var screenShot = new Texture2D(cameraResolution.x, cameraResolution.y, TextureFormat.RGB24, false);
+        refCam.Render();
+        RenderTexture.active = rt;
+        screenShot.ReadPixels(new Rect(0, 0, cameraResolution.x, cameraResolution.y), 0, 0);
+        refCam.targetTexture = null;
+        RenderTexture.active = null; // JC: added to avoid errors
+        Destroy(rt);
+        client.SendImage(screenShot);
     }
 
     private void CaptureScreenshot(string imgName)
