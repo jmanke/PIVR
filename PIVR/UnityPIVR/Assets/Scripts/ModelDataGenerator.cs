@@ -26,9 +26,30 @@ public class ModelDataGenerator : MonoBehaviour
     private void Start()
     {
         Debug.Log("Distance = " + Vector3.Distance(refCam.transform.position, target.position));
-        // StartCoroutine(StartClient());
-        if (modelType == ModelType._2D)
-            StartCoroutine(TakePositionSnapshots());
+        StartCoroutine(StartClient());
+        //if (modelType == ModelType._2D)
+        //    StartCoroutine(TakePositionSnapshots());
+    }
+
+    private IEnumerator StartClient()
+    {
+        client = new Client();
+        yield return new WaitForSeconds(1f);
+        CaptureScreenshot();
+    }
+
+    private void CaptureScreenshot()
+    {
+        var rt = new RenderTexture(cameraResolution.x, cameraResolution.y, 24);
+        refCam.targetTexture = rt;
+        var screenShot = new Texture2D(cameraResolution.x, cameraResolution.y, TextureFormat.RGB24, false);
+        refCam.Render();
+        RenderTexture.active = rt;
+        screenShot.ReadPixels(new Rect(0, 0, cameraResolution.x, cameraResolution.y), 0, 0);
+        refCam.targetTexture = null;
+        RenderTexture.active = null; // JC: added to avoid errors
+        Destroy(rt);
+        client.SendImage(screenShot);
     }
 
     private void CaptureScreenshot(string imgName)
@@ -41,12 +62,11 @@ public class ModelDataGenerator : MonoBehaviour
         screenShot.ReadPixels(new Rect(0, 0, cameraResolution.x, cameraResolution.y), 0, 0);
         refCam.targetTexture = null;
         RenderTexture.active = null; // JC: added to avoid errors
+        Destroy(rt);
         byte[] bytes = screenShot.EncodeToJPG();
         string filename = Application.dataPath.Replace("Assets", "") + outputPath + "/" + imgName + ".jpg";
-        Destroy(rt);
-        Destroy(screenShot);
         System.IO.File.WriteAllBytes(filename, bytes);
-        //Debug.Log("Saved " + filename);
+        Debug.Log("Saved " + filename);
     }
 
     private IEnumerator TakeRotationScreenshots2D()
@@ -99,44 +119,46 @@ public class ModelDataGenerator : MonoBehaviour
                 {
                     target.position = new Vector3(topLeft.x + horIncrAmt * k, topLeft.y - vertIncrAmt * j, distance);
                     float dist = Vector3.Distance(target.position, refCam.transform.position);
-                    CaptureScreenshot("img_" + c + "_" + string.Format("{0:00.000}", dist));
-                    yield return null;
+                    if (Mathf.Abs(dist - 0.85f) < 0.002f)
+                    {
+                        CaptureScreenshot("img_" + c + "_" + string.Format("{0:00.000}", dist));
+                        yield return null;
+                    }
                 }
             }
         }
 
         target.position = originalTargetPos;
-        Debug.Log("Num screenshots = " + c);
     }
 
-    //void Update()
-    //{
-    //    // this example shows the different camera frustums when using asymmetric projection matrices (like those used by OpenVR).
+    void Update()
+    {
+        // this example shows the different camera frustums when using asymmetric projection matrices (like those used by OpenVR).
 
-    //    var camera = refCam;
-    //    Vector3[] frustumCorners = new Vector3[4];
-    //    camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
+        var camera = refCam;
+        Vector3[] frustumCorners = new Vector3[4];
+        camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Mono, frustumCorners);
 
-    //    for (int i = 2; i < 3; i++)
-    //    {
-    //        var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
-    //        Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.blue);
-    //    }
+        for (int i = 2; i < 3; i++)
+        {
+            var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
+            Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.blue);
+        }
 
-    //    camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Left, frustumCorners);
+        camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Left, frustumCorners);
 
-    //    for (int i = 0; i < 4; i++)
-    //    {
-    //        var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
-    //        Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.green);
-    //    }
+        for (int i = 0; i < 4; i++)
+        {
+            var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
+            Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.green);
+        }
 
-    //    camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Right, frustumCorners);
+        camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.farClipPlane, Camera.MonoOrStereoscopicEye.Right, frustumCorners);
 
-    //    for (int i = 0; i < 4; i++)
-    //    {
-    //        var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
-    //        Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.red);
-    //    }
-    //}
+        for (int i = 0; i < 4; i++)
+        {
+            var worldSpaceCorner = camera.transform.TransformVector(frustumCorners[i]);
+            Debug.DrawRay(camera.transform.position, worldSpaceCorner, Color.red);
+        }
+    }
 }

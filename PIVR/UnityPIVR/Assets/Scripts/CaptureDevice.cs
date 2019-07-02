@@ -8,11 +8,16 @@ public class CaptureDevice : MonoBehaviour
 {
     public Transform model;
     public Vector2Int cameraResolution = new Vector2Int(640, 480);
-    private Vector3 originalModelPos;
+    private Vector3 origModelPos;
 
     private void Awake()
     {
-        originalModelPos = model.position;
+        origModelPos = model.position;
+    }
+
+    public void ResetModel()
+    {
+        model.position = origModelPos;
     }
 
     public Texture2D TakeScreenshot()
@@ -31,10 +36,21 @@ public class CaptureDevice : MonoBehaviour
         return screenShot;
     }
 
-    public void ResetModel()
-    {
-        model.position = originalModelPos;
-    }
+    //public void PositionModel(List<Tuple<Vector2, Vector2>> kpPairs)
+    //{
+    //    if (kpPairs.Count < 1) return;
+
+    //    var realPos = kpPairs[0].Item2;
+    //    var modelPos = kpPairs[0].Item1;
+    //    var cam = GetComponent <Camera>();
+    //    var realScreenPos = new Vector3(realPos.x, cam.pixelHeight - realPos.y, model.position.z);
+    //    var modelScreenPos = new Vector3(modelPos.x, cam.pixelHeight - modelPos.y, model.position.z);
+    //    var modelKpPos = cam.ScreenToWorldPoint(modelScreenPos) - model.position;
+    //    // var targetModelPos = cam.ScreenToWorldPoint(realScreenPos);
+    //    var targetModelPos = cam.ScreenToWorldPoint(realScreenPos);
+
+    //    model.position = targetModelPos - modelKpPos; 
+    //}
 
     /// <summary>
     /// get the two clost points (indices) in the kp pairs list
@@ -92,8 +108,8 @@ public class CaptureDevice : MonoBehaviour
         var pos = model.position;
         pos.z *= ratio;
 
-        //Debug.Log($"frust height = {frustumHeight}, Ratio = {ratio}");
-        //Debug.Log($"Real = {distReal}, Model = {distModel}, Diff = {Mathf.Abs(distReal - distModel)}");
+        Debug.Log($"frust height = {frustumHeight}, Ratio = {ratio}");
+        Debug.Log($"Real = {distReal}, Model = {distModel}, Diff = {Mathf.Abs(distReal - distModel)}");
 
         model.position = pos;
         distModel = Vector3.Distance(cam.WorldToScreenPoint(p1Trans.position), cam.WorldToScreenPoint(p2Trans.position));
@@ -110,7 +126,7 @@ public class CaptureDevice : MonoBehaviour
         p1Trans.position = targetModelPos;
         model.SetParent(null);
 
-        //Debug.Log("Dist to target = " + Vector3.Distance(cam.transform.position, model.position));
+        Debug.Log("Dist to target = " + Vector3.Distance(cam.transform.position, model.position));
 
         Destroy(p1Trans.gameObject);
         Destroy(p2Trans.gameObject);

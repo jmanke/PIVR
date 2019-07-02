@@ -63,7 +63,6 @@
     <Compile Include="Assets\Scripts\BezierExamples.cs" />
     <Compile Include="Assets\Scripts\CaptureDevice.cs" />
     <Compile Include="Assets\Scripts\Client.cs" />
-    <Compile Include="Assets\Scripts\ImageDump.cs" />
     <Compile Include="Assets\Scripts\IPCBootstrapper.cs" />
     <Compile Include="Assets\Scripts\MainThread.cs" />
     <Compile Include="Assets\Scripts\ModelDataGenerator.cs" />

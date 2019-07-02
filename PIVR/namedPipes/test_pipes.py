@@ -160,7 +160,7 @@ def main():
     for filename in glob.glob(os.path.join(image_dir, '*.jpg')):
         target_img = cv2.imread(filename, 0)
         matched_points = get_matches(train_img, target_img)
-        if len(matched_points) < 2:
+        if matched_points is None or len(matched_points) < 2:
             print("No matches: ", filename)
             continue
         im = pipe_client.best_fit_img(handle, matched_points)
