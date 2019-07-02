@@ -5,7 +5,7 @@ import numpy as np
 import win32pipe, win32file, pywintypes
 
 
-def get_handle():
+def handle():
     try:
         handle = win32file.CreateFile(
             r'\\.\pipe\PIVR_pipe',
@@ -24,7 +24,7 @@ def get_handle():
             print("broken pipe")
 
 
-def get_train_img(handle):
+def train_img(handle):
     if handle:
         data = "heyyy"
         data_type = (1).to_bytes(1, byteorder="little")
@@ -43,10 +43,10 @@ def get_train_img(handle):
 
 # get a best fit image from Unity
 # kp = list of tuples containing keypoints from training image and real image
-def get_best_fit_img(handle, kp):
+def best_fit_img(handle, kp):
     data = np.array(kp)
     data = np.ndarray.flatten(data)
-    print(len(data), "  ", kp)
+    # print(len(data), "  ", kp)
     data_type = (2).to_bytes(1, byteorder="little")
     encoded_data = np.ndarray.tobytes(data)
     data_len = len(encoded_data).to_bytes(4, byteorder="little")
@@ -55,5 +55,7 @@ def get_best_fit_img(handle, kp):
     print("Sending data...")
     print("Waiting for best fit...")
     resp = win32file.ReadFile(handle, 64 * 1024)
-    print("Data best fit...")
+    print("Data received best fit...")
+    if resp[1] is None:
+        print("Bad")
     return resp[1]

@@ -94,6 +94,7 @@ public class Server
         stream.Write(bytes, 0, bytes.Length);
         Debug.Log("Sent best fit");
         pendingWrite = false;
+        cd.ResetModel();
     }
 
     private void ProcessMessage(byte type, int size, byte[] data)
