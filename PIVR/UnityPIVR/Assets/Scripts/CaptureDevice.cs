@@ -10,9 +10,23 @@ public class CaptureDevice : MonoBehaviour
     public Vector2Int cameraResolution = new Vector2Int(640, 480);
     private Vector3 origModelPos;
 
+    private Camera cam;
+
+    public Camera Camera
+    {
+        get
+        {
+            if (cam == null)
+                cam = GetComponent<Camera>();
+
+            return cam;
+        }
+    }
+
     private void Awake()
     {
-        origModelPos = model.position;
+        if (model != null)
+            origModelPos = model.position;
     }
 
     public void ResetModel()
