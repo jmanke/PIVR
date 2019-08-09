@@ -1,0 +1,7 @@
+train  = LINEMOD/rubber_duck/train.txt
+valid  = LINEMOD/rubber_duck/test.txt
+backup = backup/rubber_duck
+mesh = LINEMOD/rubber_duck/rubber_duck.ply
+tr_range = LINEMOD/rubber_duck/training_range.txt
+name = rubber_duck
+diam = 0.10

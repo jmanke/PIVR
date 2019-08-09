@@ -50,7 +50,8 @@ def train(epoch):
     
     # Initialize timer
     t0 = time.time()
-
+    # batch_size = 4
+    print(batch_size)
     # Get the dataloader for training dataset
     train_loader = torch.utils.data.DataLoader(dataset.listDataset(trainlist, shape=(init_width, init_height),
                                                             	   shuffle=True,
@@ -152,9 +153,9 @@ def test(epoch, niter):
     errs_corner2D        = []
 
     logging("   Testing...")
-    logging("   Number of test samples: %d" % len(test_loader.dataset))
+    logging("   Number of samples: %d" % len(test_loader.dataset))
     notpredicted = 0
-    # Iterate through test examples 
+    # Iterate through rasp_250_models examples
     for batch_idx, (data, target) in enumerate(test_loader):
         t1 = time.time()
         # Pass the data to GPU
@@ -263,7 +264,7 @@ def test(epoch, niter):
         print('           total : %f' % (t5 - t1))
         print('-----------------------------------')
 
-    # Print test statistics
+    # Print rasp_250_models statistics
     logging("   Mean corner error is %f" % (mean_corner_err_2d))
     logging('   Acc using {} px 2D Projection = {:.2f}%'.format(px_threshold, acc))
     logging('   Acc using {} vx 3D Transformation = {:.2f}%'.format(vx_threshold, acc3d))
@@ -367,7 +368,7 @@ if __name__ == "__main__":
     # Specify the number of workers
     kwargs = {'num_workers': num_workers, 'pin_memory': True} if use_cuda else {}
 
-    # Get the dataloader for test data
+    # Get the dataloader for rasp_250_models data
     test_loader = torch.utils.data.DataLoader(dataset.listDataset(testlist, 
     															  shape=(test_width, test_height),
                                                                   shuffle=False,

@@ -1,0 +1,7 @@
+train  = LINEMOD/rasp/train.txt
+valid  = LINEMOD/rasp/test.txt
+backup = backup/rasp
+mesh = LINEMOD/rasp/rasp_pi_mesh.ply
+tr_range = LINEMOD/rasp/training_range.txt
+name = rasp
+diam = 0.10
