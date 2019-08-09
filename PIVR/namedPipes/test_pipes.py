@@ -38,7 +38,7 @@ def similarity(img1, img2, min_matches):
     matches = flann.knnMatch(des1, des2, k=2)
 
     good = []
-    # store all the good matches as per Lowe's ratio test.
+    # store all the good matches as per Lowe's ratio rasp_250_models.
     for m, n in matches:
         if m.distance < 0.6 * n.distance:
             good.append(m)
@@ -112,7 +112,7 @@ def get_matches(train_img, target_img):
 
 
     good = []
-    # store all the good matches as per Lowe's ratio test.
+    # store all the good matches as per Lowe's ratio rasp_250_models.
     for m, n in matches:
         if m.distance < 0.7 * n.distance:
             good.append(m)
